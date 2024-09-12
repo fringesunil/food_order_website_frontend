@@ -16,8 +16,10 @@ export default function Login() {
             <input type="password" id="password" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"/>
           </div>
           <div className="flex items-center justify-between py-2">
-            <button className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-              Login
+          <button className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+           <Link to={`/home/hotels`}>
+           Login
+           </Link>
             </button>
           </div>
           <div>
