@@ -24,7 +24,6 @@ export default function Login() {
           </div>
           <div>
           <Link className='flex justify-end pb-2 text-white' to={"/signup"}>Don’t Have an Account? Signup</Link>
-            {/* <a className='flex justify-end pb-2 text-white' href="">Don’t Have an Account? Signup</a> */}
           </div>
         </form>
       </div>
