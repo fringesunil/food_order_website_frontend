@@ -5,7 +5,7 @@ export default function Profile() {
     <main className='bg-[#B0A1BA] h-screen'>
     <section >
         <h1>Profile</h1>
-        
+       
     </section>
   </main>
   )
