@@ -13,6 +13,7 @@ import ErrorPage from './error';
 import Cart from './routes/cart';
 import Profile from './routes/profile';
 import Menu from './routes/menu';
+import Address from './routes/address';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: `/home/menu`,
         element: <Menu />,
+      },
+      {
+        path: `/home/profile/address`,
+        element: <Address />,
       },
     ],
   },
