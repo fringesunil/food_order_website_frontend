@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom";
 
 
 export default function LoginForm() {
@@ -10,9 +11,9 @@ export default function LoginForm() {
     formState: { errors },
   } = useForm()
 
-
+  const navigate = useNavigate()
   const onSubmit = (data) => {
-    axios.post(`http://localhost:3000/auth/login`,data).then(response=>console.log(response)).catch(error=>console.log(error))
+    axios.post(`http://localhost:3000/auth/login`,data,{withCredentials: true}).then(response=>navigate(`/home/hotels`)).catch(error=>console.log(error))
   };
 
 

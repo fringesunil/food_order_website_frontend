@@ -8,11 +8,11 @@ import './index.css'
 import Login from './routes/login';
 import Signup from './routes/signup';
 import Home from './routes/home';
-import Hotels from './routes/hotels';
+import Hotels,{loader as hotelLoader} from './routes/hotels';
 import ErrorPage from './error';
 import Cart from './routes/cart';
 import Profile from './routes/profile';
-import Menu from './routes/menu';
+import Menu,{loader as menuLoader} from './routes/menu';
 import Address from './routes/address';
 
 const router = createBrowserRouter([
@@ -32,6 +32,7 @@ const router = createBrowserRouter([
       {
         path: `/home/hotels`,
         element: <Hotels />,
+        loader: hotelLoader
       },
       {
         path: `/home/cart`,
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       {
         path: `/home/menu`,
         element: <Menu />,
+        loader:menuLoader
       },
       {
         path: `/home/profile/address`,
