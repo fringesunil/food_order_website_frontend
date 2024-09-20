@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function MenuCard(props) {
   const {menu} = props;
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = () => {
+    setCount(prevCount => prevCount + 1);
+  };
+
+  const handleDecrement = () => {
+    if (count > 0) {
+      setCount(prevCount => prevCount - 1);
+    }
+  };
     return (
         <article>
         <div className='w-[16rem] h-fit bg-transparent border border-black rounded-lg mx-4 px-3 py-1'>
@@ -12,9 +23,9 @@ function MenuCard(props) {
       </div>
      <div className='pb-2'>
      <div className='item-count flex items-center space-x-4 border border-black w-[7rem] px-4  rounded-full '>
-        <button className='px-1'>-</button>
-        <span>0</span>
-        <button>+</button>
+        <button className='px-1' onClick={handleDecrement}>-</button>
+        <span>{count}</span>
+        <button onClick={handleIncrement}>+</button>
       </div>
      </div>
       <button className=' item-count flex items-center space-x-4 border border-black w-[7rem] px-3 rounded-[8px] bg-[#A5B5BF]'>Add to cart</button>
