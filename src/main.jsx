@@ -12,7 +12,7 @@ import Hotels,{loader as hotelLoader} from './routes/hotels';
 import ErrorPage from './error';
 import Cart from './routes/cart';
 import Profile from './routes/profile';
-import Menu,{loader as menuLoader} from './routes/menu';
+import Menu from './routes/menu';
 import Address from './routes/address';
 
 const router = createBrowserRouter([
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       {
         path: `/home/menu`,
         element: <Menu />,
-        loader:menuLoader
+       
       },
       {
         path: `/home/profile/address`,
