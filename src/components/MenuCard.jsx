@@ -33,9 +33,7 @@ function MenuCard(props) {
     };
 
     try {
-      const response = await axios.post(`http://localhost:3000/cart`, cartData, {
-      
-      });
+      const response = await axios.post(`http://localhost:3000/cart`, cartData,);
 
       alert('Item added to cart successfully');
     } catch (error) {

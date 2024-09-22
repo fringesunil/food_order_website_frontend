@@ -1,10 +1,12 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import AddressCart from '../components/AddressCard';
 
 export default function Address() {
   return (
     <main className='bg-[#B0A1BA] h-screen'>
-     <form>
+      <AddressCart/>
+     {/* <form>
           <div className="mb-2 px-36 py-2">
             <label htmlFor="name" className="block text-black text-sm font-bold mb-2">Name</label>
             <input type="name" id="name" className="shadow appearance-none border rounded w-[70rem] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
@@ -40,7 +42,7 @@ export default function Address() {
             </button>
           </div>
          
-        </form>
+        </form> */}
   </main>
   )
 }
