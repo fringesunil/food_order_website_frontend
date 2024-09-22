@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 function MenuCard(props) {
-  const { menu, userId } = props;
+  const userId = localStorage.getItem('userId');
+  const { menu} = props;
   const [count, setCount] = useState(0);
 
   const handleIncrement = () => {
@@ -44,6 +45,7 @@ function MenuCard(props) {
   };
 
   return (
+    
     <article>
       <div className='w-[16rem] h-fit bg-transparent border border-black rounded-lg mx-4 px-3 py-1'>
         <img src={menu.image} alt="Menu image" className='w-[20rem] h-[09rem] rounded-lg' />

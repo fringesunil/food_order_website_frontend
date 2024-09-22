@@ -25,15 +25,9 @@ function Menu() {
     <main className='bg-[#B0A1BA] h-screen'>
       <section className='py-2 px-2'>
         <div className='grid grid-cols-5 gap-4'>
-        {menulist.map((menu, index) => (
-            <MenuCard key={index} menu={menu} />
+        {menulist.map((menu) => (
+            <MenuCard key={menu._id} menu={menu} />
           ))}
-          {/* <MenuCard />
-          <MenuCard />
-          <MenuCard />
-          <MenuCard />
-          <MenuCard />
-          <MenuCard /> */}
         </div>
       </section>
     </main>

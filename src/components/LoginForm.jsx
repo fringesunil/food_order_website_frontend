@@ -13,7 +13,11 @@ export default function LoginForm() {
 
   const navigate = useNavigate()
   const onSubmit = (data) => {
-    axios.post(`http://localhost:3000/auth/login`,data,{withCredentials: true}).then(response=>navigate(`/home/hotels`)).catch(error=>console.log(error))
+    axios.post(`http://localhost:3000/auth/login`,data,{withCredentials: true}).
+    then(response=>{
+      localStorage.setItem('userId', response.data.data._id);
+      navigate(`/home/hotels`)
+    }).catch(error=>console.log(error))
   };
 
 
