@@ -21,26 +21,40 @@ function MenuCard(props) {
       alert('Please select at least one item.');
       return;
     }
-
-    const cartData = {
-      user_id: userId,
-      cart_items: [
-        {
-          menu_id: menu._id, 
-          quantity: count,
-        },
-      ],
+  
+    const newCartItem = {
+      menu_id: menu._id,
+      quantity: count,
     };
-
+  
     try {
-      const response = await axios.post(`http://localhost:3000/cart`, cartData,);
+      let response = await axios.get(`http://localhost:3000/cart?user_id=${userId}`);
+      let cartData;
+      if (response.data && response.data.length > 0) {
 
+        cartData = response.data[0];
+        cartData.cart_items.push(newCartItem);
+        cartData.total_amount += menu.price * count;
+        await axios.patch(`http://localhost:3000/cart/${cartData._id}`, cartData);
+      } else {
+        cartData = {
+          user_id: userId,
+          cart_items: [newCartItem],
+          total_amount: menu.price * count, 
+        };
+  
+        await axios.post(`http://localhost:3000/cart`, cartData);
+      }
+  
       alert('Item added to cart successfully');
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to add item to cart');
     }
   };
+  
+  
+  
 
   return (
     
