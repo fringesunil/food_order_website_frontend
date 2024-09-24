@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLoaderData } from 'react-router-dom';
 
 export async function loader() {
- const response = await axios.get(`http://localhost:3000/restaurants`)
+ const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/restaurants`)
  const hotels = response.data
   return { hotels };
 }
@@ -21,13 +21,6 @@ export default function Hotels() {
             return<RestaurantCard key={hotel._id} hotel={hotel}/>
           })
         }
-      {/* <RestaurantCard/>
-      <RestaurantCard/>
-      <RestaurantCard/>
-      <RestaurantCard/>
-      <RestaurantCard/>
-      <RestaurantCard/>
-      <RestaurantCard/> */}
       </div>
     </section>
   </main>

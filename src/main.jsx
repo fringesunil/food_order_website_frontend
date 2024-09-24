@@ -11,7 +11,7 @@ import Home from './routes/home';
 import Hotels,{loader as hotelLoader} from './routes/hotels';
 import ErrorPage from './error';
 import Cart,{loader as cartLoader} from './routes/cart';
-import Profile from './routes/profile';
+import Profile,{loader as profileLoader} from './routes/profile';
 import Menu from './routes/menu';
 import Address from './routes/address';
 
@@ -42,6 +42,7 @@ const router = createBrowserRouter([
       {
         path: `/home/profile`,
         element: <Profile />,
+        loader:profileLoader
       },
       {
         path: `/home/menu`,

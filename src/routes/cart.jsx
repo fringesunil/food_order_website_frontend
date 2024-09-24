@@ -6,7 +6,7 @@ import CouponForm from '../components/CouponForm';
 
 export async function loader() {
   const userId = localStorage.getItem('userId');
-  const response = await axios.get(`http://localhost:3000/cart?user_id=${userId}`);
+  const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
   const carts = response.data;
   return { carts };
 }
@@ -33,9 +33,9 @@ export default function Cart() {
     };
 
     try {
-      const response = await axios.post(`http://localhost:3000/order`, orderData);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/order`, orderData);
       if(response.status==200){
-        const response = await  axios.delete(`http://localhost:3000/cart/${carts[0]._id}`)
+        const response = await  axios.delete(`${import.meta.env.VITE_BASE_URL}/cart/${carts[0]._id}`)
         if(response.status==200){
           navigate(`/home/hotels`)
         }
@@ -61,23 +61,25 @@ export default function Cart() {
               <p className='py-52 px-52'>No items in the cart.</p> 
             )}
           </div>
-          <div className='w-[59rem] h-screen bg-transparent border-r border-black px-3 py-1'>
+          <div className='w-[59rem] h-screen bg-transparent border-r border-black px-3 py-2'>
             <h2>Coupon Code</h2>
               <CouponForm cartId={carts && carts.length > 0 ?carts[0]._id:0}/>
-            <h2>Bill Details</h2>
+            <h2 className='py-4'>Bill Details</h2>
             <div className='flex justify-between'>
               <span>Item Total</span>
-              <span>₹ {totalAmount}</span>
+              <span>₹ {totalAmount.toFixed(2)}</span>
             </div>
             <div className='flex justify-between'>
               <span>Discount</span>
-              <span>₹ {discount}</span>
+              <span>₹ {discount.toFixed(2)}</span>
             </div>
             <div className='flex justify-between'>
               <span>GST</span>
               <span>₹ {gstAmount.toFixed(2)}</span>
             </div>
-            <div className='flex justify-between font-bold'>
+            <div className="border-b border-black my-2"></div>
+
+            <div className='flex justify-between font-bold pb-4'>
               <span>To Pay</span>
               <span>₹ {(totalAmount + gstAmount).toFixed(2)}</span>
             </div>

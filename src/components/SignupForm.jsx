@@ -13,11 +13,11 @@ export default function SignupForm() {
 
   const navigate = useNavigate()
   const onSubmit = (data) => {
-    axios.post(`http://localhost:3000/user`,data).then(response=>navigate(`/`)).catch(error=>console.log(error))
+    axios.post(`${import.meta.env.VITE_BASE_URL}/user`,data).then(response=>navigate(`/`)).catch(error=>console.log(error))
   }
 
 
-  console.log(watch("example")) // watch input value by passing the name of it
+  console.log(watch("example"))
 
 
   return (

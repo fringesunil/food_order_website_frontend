@@ -19,7 +19,7 @@ export default function AddressCart() {
         ...data,
         user_id: userId    
     }
-axios.post(`http://localhost:3000/address`,body).then(response=>{
+axios.post(`${import.meta.env.VITE_BASE_URL}/address`,body).then(response=>{
     navigate(`/home/profile`)
   }).catch(error=>console.log(error))
   }

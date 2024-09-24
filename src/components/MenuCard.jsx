@@ -28,14 +28,14 @@ function MenuCard(props) {
     };
   
     try {
-      let response = await axios.get(`http://localhost:3000/cart?user_id=${userId}`);
+      let response = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
       let cartData;
       if (response.data && response.data.length > 0) {
 
         cartData = response.data[0];
         cartData.cart_items.push(newCartItem);
         cartData.total_amount += menu.price * count;
-        await axios.patch(`http://localhost:3000/cart/${cartData._id}`, cartData);
+        await axios.patch(`${import.meta.env.VITE_BASE_URL}/cart/${cartData._id}`, cartData);
       } else {
         cartData = {
           user_id: userId,
@@ -43,7 +43,7 @@ function MenuCard(props) {
           total_amount: menu.price * count, 
         };
   
-        await axios.post(`http://localhost:3000/cart`, cartData);
+        await axios.post(`${import.meta.env.VITE_BASE_URL}/cart`, cartData);
       }
   
       alert('Item added to cart successfully');

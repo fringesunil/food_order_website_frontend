@@ -16,10 +16,11 @@ function CartitemsCard(props) {
             <div>
               <h2>{name}</h2>
               <span>₹ {price}</span> 
-              <div className='item-count flex items-center space-x-4 border border-black w-[7rem] px-4 rounded-full'>
-                <button className='px-1'>-</button>
-                <span>{quantity}</span> 
-                <button>+</button>
+              <div className='item-count flex'>
+              <span>Qty:  {quantity}</span> 
+              </div>
+              <div>
+              <span>Total:  {price} * {quantity} = {price*quantity}</span> 
               </div>
             </div>
           </div>

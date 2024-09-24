@@ -11,7 +11,7 @@ function Menu() {
 
   useEffect(() => {
     if (hotel?._id) {
-      axios.get(`http://localhost:3000/menu?restaurant_id=${hotel._id}`)
+      axios.get(`${import.meta.env.VITE_BASE_URL}/menu?restaurant_id=${hotel._id}`)
         .then((response) => {
           setMenuList(response.data);
         })

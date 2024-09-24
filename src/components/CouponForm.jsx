@@ -17,7 +17,7 @@ export default function CouponForm({cartId }) {
         ...data,
         cartId:cartId
     }
-    axios.post(`http://localhost:3000/coupon/apply-coupon`,body).
+    axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`,body).
     then(response=>{
         if (response.status === 200) {
             window.location.reload();
