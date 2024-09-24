@@ -1,9 +1,11 @@
 import axios from "axios"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 
 
 export default function CouponForm({cartId }) {
     console.log(cartId)
+    const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -20,7 +22,7 @@ export default function CouponForm({cartId }) {
     axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`,body).
     then(response=>{
         if (response.status === 200) {
-            window.location.reload();
+          navigate(`/home/cart`)
         }
     }).catch(error=>console.log(error))
   }
