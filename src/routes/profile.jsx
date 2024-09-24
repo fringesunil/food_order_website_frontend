@@ -39,7 +39,7 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('${import.meta.env.VITE_BASE_URL}/auth/logout');
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/logout`);
       localStorage.removeItem('userId');
       navigate('/');
     } catch (error) {
