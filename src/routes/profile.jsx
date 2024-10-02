@@ -68,6 +68,9 @@ export default function Profile() {
           <h1 className='mb-4 font-bold'>{user.name}</h1>
 
           <button className="w-[25rem] bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded  border-2 border-black mb-4" type="button">
+            <Link to={`/home/profile/orderhistory`}>Order History</Link>
+          </button>
+          <button className="w-[25rem] bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded  border-2 border-black mb-4" type="button">
             <Link to={`/home/profile/address`}>Manage Address</Link>
           </button>
           <button 

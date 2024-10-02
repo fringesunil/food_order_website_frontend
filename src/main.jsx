@@ -14,6 +14,7 @@ import Cart,{loader as cartLoader} from './routes/cart';
 import Profile,{loader as profileLoader} from './routes/profile';
 import Menu from './routes/menu';
 import Address from './routes/address';
+import OrderHistory from './routes/orderhistory';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: `/home/profile/address`,
         element: <Address />,
+      },
+      {
+        path: `/home/profile/orderhistory`,
+        element: <OrderHistory />,
       },
     ],
   },

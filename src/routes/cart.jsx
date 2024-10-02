@@ -24,29 +24,55 @@ export default function Cart() {
       menu_id: item.menu_id._id, 
       quantity: item.quantity, 
     })) : [];
+    
     const orderData = {
       user_id: userId,
-      total_amount:totalAmount,
-      discount:discount,
-      gst_amount:gstAmount,
+      total_amount: totalAmount,
+      discount: discount,
+      gst_amount: gstAmount,
       cart_items: cartItems,
     };
-
+  
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/order`, orderData);
-      if(response.status==200){
-        const response = await  axios.delete(`${import.meta.env.VITE_BASE_URL}/cart/${carts[0]._id}`)
-        if(response.status==200){
-          navigate(`/home/hotels`)
-        }
-      }
-
-      alert('Order Placed Sucessfully');
+      const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/order/initorder`, { total_amount: totalAmount + gstAmount });
+  
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: data.amount,
+        currency: data.currency,
+        name: 'Fringe Creations',
+        description: 'Order Payment',
+        order_id: data.id, 
+        handler: async function (paymentResponse) {
+          const razorpay_payment_id = paymentResponse.razorpay_payment_id;
+          const razorpay_order_id = paymentResponse.razorpay_order_id;
+          const razorpay_signature = paymentResponse.razorpay_signature;
+          const orderResponse = await axios.post(`${import.meta.env.VITE_BASE_URL}/order`, {
+            ...orderData,
+            razorpay_payment_id,
+            razorpay_order_id,
+            razorpay_signature,
+          });
+  
+          if (orderResponse.status === 200) {
+            await axios.delete(`${import.meta.env.VITE_BASE_URL}/cart/${carts[0]._id}`);
+            navigate(`/home/hotels`);
+            alert('Order Placed Successfully');
+          }
+        },
+        theme: {
+          color: '##A5B5BF',
+        },
+      };
+  
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to add item to cart');
+      alert('Failed to proceed with payment');
     }
   };
+  
 
   return (
     <main className='bg-[#B0A1BA] h-screen'>
@@ -58,12 +84,12 @@ export default function Cart() {
                 <CartitemsCard key={cart._id} cart={cart} /> 
               ))
             ) : (
-              <p className='py-52 px-52'>No items in the cart.</p> 
+              <p className='py-52 px-52 w-[57rem]'>No items in the cart.</p> 
             )}
           </div>
           <div className='w-[59rem] h-screen bg-transparent border-r border-black px-3 py-2'>
             <h2>Coupon Code</h2>
-              <CouponForm cartId={carts && carts.length > 0 ?carts[0]._id:0}/>
+              <CouponForm cartId={carts && carts.length > 0 ? carts[0]._id : 0}/>  
             <h2 className='py-4'>Bill Details</h2>
             <div className='flex justify-between'>
               <span>Item Total</span>
