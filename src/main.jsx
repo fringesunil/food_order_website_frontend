@@ -15,6 +15,8 @@ import Profile,{loader as profileLoader} from './routes/profile';
 import Menu from './routes/menu';
 import Address from './routes/address';
 import OrderHistory from './routes/orderhistory';
+import AddressList,{loader as addresslistLoader} from './routes/addressList';
+import EditAddress,{loader as editaddressLoader} from './routes/editAddress';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +54,16 @@ const router = createBrowserRouter([
       },
       {
         path: `/home/profile/address`,
+        element: <AddressList />,
+        loader:addresslistLoader
+      },
+      {
+        path: `/home/profile/address/edit/:addressid`,
+        element: <EditAddress />,
+        loader: editaddressLoader
+      },
+      {
+        path: `/home/profile/address/add`,
         element: <Address />,
       },
       {
