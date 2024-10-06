@@ -3,15 +3,14 @@ import axios from 'axios';
 import { FaTrashAlt } from 'react-icons/fa'; 
 
 export default function OrderHistory() {
+  const userId = localStorage.getItem('userId');
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/order', {
-          params: { user_id: '66f2feb951835c4734ab20d2' }
-        });
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/order?user_id=${userId}`);
         setOrders(response.data);
       } catch (err) {
         setError(err.response ? err.response.data.message : err.message);
@@ -25,7 +24,7 @@ export default function OrderHistory() {
 
   const handleDelete = async (orderId) => {
     try {
-      await axios.delete(`http://localhost:3000/order/${orderId}`); 
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/order/${orderId}`); 
       setOrders(orders.filter(order => order._id !== orderId)); 
     } catch (err) {
       setError(err.response ? err.response.data.message : err.message);
@@ -33,11 +32,11 @@ export default function OrderHistory() {
   };
 
   if (loading) {
-    return <p className="text-center mt-5">Loading...</p>;
+    return <p className="text-center mt-5 bg-[#B0A1BA] h-screen">Loading...</p>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500 mt-5">{error}</p>;
+    return <p className="text-center text-red-500 mt- bg-[#B0A1BA] h-screen">{error}</p>;
   }
 
   return (
