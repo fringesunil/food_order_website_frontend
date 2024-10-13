@@ -19,7 +19,7 @@ export default function LoginForm() {
       .then(response => {
         localStorage.setItem('userId', response.data.data._id);
         toast.success("Login Successful!", {
-          position: "top-right",
+          position: "top-center",
           autoClose: 3000,
         });
         navigate(`/home/hotels`);

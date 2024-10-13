@@ -1,6 +1,8 @@
 import axios from "axios"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function SignupForm() {
@@ -13,7 +15,16 @@ export default function SignupForm() {
 
   const navigate = useNavigate()
   const onSubmit = (data) => {
-    axios.post(`${import.meta.env.VITE_BASE_URL}/user`,data).then(response=>navigate(`/`)).catch(error=>console.log(error))
+    axios.post(`${import.meta.env.VITE_BASE_URL}/user`,data).then(response=>{
+      console.log('API Response:', response.data); // Log the entire response
+      console.log(`USER ID========>${response.data._id}`);
+      localStorage.setItem('userId', response.data._id);
+      toast.success("Login Successful!", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+      navigate(`/home/hotels`);
+    }).catch(error=>console.log(error))
   }
 
 
@@ -22,6 +33,8 @@ export default function SignupForm() {
 
   return (
     /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+   <>
+     <ToastContainer />
     <form onSubmit={handleSubmit(onSubmit)}>
 
 <label htmlFor="username" className="block text-white text-sm font-bold mb-2">Name</label>
@@ -43,5 +56,6 @@ export default function SignupForm() {
 
       <input className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2 mb-4" type="submit" value={"SIGN UP"} />
     </form>
+   </>
   )
 }
