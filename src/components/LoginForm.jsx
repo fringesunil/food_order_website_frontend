@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useState } from "react";
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function LoginForm() {
   const {
@@ -13,10 +15,13 @@ export default function LoginForm() {
   } = useForm();
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); 
 
   const onSubmit = (data) => {
+    setLoading(true); 
     axios.post(`${import.meta.env.VITE_BASE_URL}/auth/login`, data, { withCredentials: true })
       .then(response => {
+        setLoading(false); 
         localStorage.setItem('userId', response.data.data._id);
         toast.success("Login Successful!", {
           position: "top-center",
@@ -25,6 +30,7 @@ export default function LoginForm() {
         navigate(`/home/hotels`);
       })
       .catch(error => {
+        setLoading(false); 
         console.log(error);
         toast.error("Login Failed. Please try again.", {
           position: "top-right",
@@ -37,10 +43,7 @@ export default function LoginForm() {
 
   return (
     <>
-    
       <ToastContainer />
-
-      
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="email" className="block text-white text-sm font-bold mb-2">Email Id</label>
         <input
@@ -60,11 +63,18 @@ export default function LoginForm() {
         />
         {errors.password && <span className="text-white text-sm font-bold">This field is required</span>}
 
-        <input
-          className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+        
+        <button
           type="submit"
-          value="LOGIN"
-        />
+          className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
+          disabled={loading}
+        >
+          {loading ? (
+            <div className="flex justify-center">
+              <CircularProgress size={20} style={{ color: '#ffffff' }} />
+            </div>
+          ) : "LOGIN"}
+        </button>
       </form>
     </>
   );
