@@ -140,7 +140,7 @@ export default function Cart() {
                   <p>No addresses found</p>
                   <button
                     className="mt-4 bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black w-[10rem]"
-                    onClick={() => navigate('/home/profile/address')}
+                    onClick={() => navigate('/home/profile/address/add',{ state: { fromCart: true } })}
                   >
                     Add Address
                   </button>

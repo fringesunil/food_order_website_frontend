@@ -17,7 +17,10 @@ export default function AddressList() {
            <div className='flex justify-between pb-6'>
    <h1 className='text-3xl font-bold text-white'>Address</h1>
    <button className='w-[10rem] bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'>
-    <Link to={`/home/profile/address/add`}> Add Address</Link>
+   <Link to={{ pathname: "/home/profile/address/add", state: { fromCart: false } }}>
+  Add Address
+</Link>
+
    </button>
    </div>
       {

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 
 
-export default function AddressCart() {
+export default function AddressCart({ fromCart }) {
     const userId = localStorage.getItem('userId');
     const navigate = useNavigate();
   const {
@@ -20,7 +20,12 @@ export default function AddressCart() {
         user_id: userId    
     }
 axios.post(`${import.meta.env.VITE_BASE_URL}/address`,body).then(response=>{
+  if(fromCart===true){
+    navigate(`/home/cart`)
+  }else{
     navigate(`/home/profile`)
+  }
+
   }).catch(error=>console.log(error))
   }
 
