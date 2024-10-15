@@ -23,7 +23,10 @@ export default function CouponForm({ cartId }) {
     const cartResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
 
     if (cartResponse.data[0].discount !== 0) {
-      toast.error("You already have a discount applied!");
+      toast.error("You already have a discount applied!", {
+        autoClose: 3000,
+      });
+      
       return; 
     }
 
@@ -36,7 +39,9 @@ export default function CouponForm({ cartId }) {
       .post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
       .then((response) => {
         if (response.status === 200) {
-          toast.success("Coupon applied successfully!");
+          toast.success("Coupon applied successfully!", {
+            autoClose: 3000,
+          });
           navigate(`/home/cart`);
         }
       })
@@ -65,7 +70,6 @@ export default function CouponForm({ cartId }) {
     navigator.clipboard.writeText(couponCode).then(() => {
       setCopiedCoupon(couponCode); 
       setTimeout(() => setCopiedCoupon(""), 2000); 
-      toast.success("Coupon code copied to clipboard!");
     });
   };
 
