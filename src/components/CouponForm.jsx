@@ -17,7 +17,13 @@ export default function CouponForm({ cartId }) {
   } = useForm();
 
  
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    const userId = localStorage.getItem('userId');
+    const cartResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
+
+    if (cartResponse.data[0].discount !== 0) {
+      return; 
+    }
     const body = {
       ...data,
       cartId: cartId,
