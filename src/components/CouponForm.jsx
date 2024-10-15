@@ -2,6 +2,8 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function CouponForm({ cartId }) {
   const navigate = useNavigate();
@@ -16,29 +18,34 @@ export default function CouponForm({ cartId }) {
     formState: { errors },
   } = useForm();
 
- 
   const onSubmit = async (data) => {
     const userId = localStorage.getItem('userId');
     const cartResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
 
     if (cartResponse.data[0].discount !== 0) {
+      toast.error("You already have a discount applied!");
       return; 
     }
+
     const body = {
       ...data,
       cartId: cartId,
     };
+
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
       .then((response) => {
         if (response.status === 200) {
+          toast.success("Coupon applied successfully!");
           navigate(`/home/cart`);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to apply coupon. Please try again."); 
+      });
   };
 
-  
   const openDialog = () => {
     axios
       .get(`${import.meta.env.VITE_BASE_URL}/coupon`)
@@ -49,17 +56,16 @@ export default function CouponForm({ cartId }) {
       .catch((error) => console.log(error));
   };
 
-  
   const closeDialog = () => {
     setIsDialogOpen(false);
     setDialogContent(null);
   };
 
-  
   const copyToClipboard = (couponCode) => {
     navigator.clipboard.writeText(couponCode).then(() => {
       setCopiedCoupon(couponCode); 
       setTimeout(() => setCopiedCoupon(""), 2000); 
+      toast.success("Coupon code copied to clipboard!");
     });
   };
 
@@ -80,7 +86,7 @@ export default function CouponForm({ cartId }) {
           <button
             type="button"
             onClick={openDialog}
-            className="shadow appearance-none  rounded w-[14rem] py-2 px-3 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-[#A5B5BF] border-2 border-black text-black font-bold"
+            className="shadow appearance-none rounded w-[14rem] py-2 px-3 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-[#A5B5BF] border-2 border-black text-black font-bold"
           >
             View Coupons
           </button>
@@ -138,6 +144,8 @@ export default function CouponForm({ cartId }) {
           </div>
         </div>
       )}
+      
+      <ToastContainer />
     </>
   );
 }
