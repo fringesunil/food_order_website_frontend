@@ -76,7 +76,7 @@ export default function CouponForm({ cartId }) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ToastContainer />
+
         <div className="flex items-center space-x-2">
           <input
             type="text"
@@ -138,6 +138,7 @@ export default function CouponForm({ cartId }) {
           </div>
         </div>
       )}
+              <ToastContainer />
     </>
   );
 }
