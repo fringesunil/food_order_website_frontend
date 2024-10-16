@@ -91,7 +91,7 @@ function MenuCard(props) {
         >
           {loading ? 'Adding...' : 'Add to cart'} 
         </button>
-        <ToastContainer limit={1}/>
+        <ToastContainer/>
       </div>
     </article>
   );
