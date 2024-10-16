@@ -87,8 +87,7 @@ export default function CouponForm({ cartId }) {
           </button>
         </div>
         <button
-         className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="button"
-        
+         className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="submit"
         >
           Apply
           </button>
