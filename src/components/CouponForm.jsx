@@ -25,17 +25,24 @@ export default function CouponForm({ cartId }) {
 
       if (cartResponse.data[0].discount !== 0) {
         toast.error("You already have a discount applied!", { autoClose: 3000 });
-        navigate(`/home/cart`);
+        window.location.reload();
+        // navigate(`/home/cart`);
         return; 
       }
 
       const body = { ...data, cartId: cartId };
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body);
-      if (response.status === 200) {
-        toast.success("Coupon applied successfully!", { autoClose: 3000 });
-        navigate(`/home/cart`);
-      }
+    axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
+  .then(response => {
+    if (response.status === 200) {
+      toast.success("Coupon applied successfully!", { autoClose: 3000 });
+      navigate(`/home/cart`);
+    }
+  })
+  .catch(error => {
+    console.error("Error applying coupon:", error);
+    // Handle error, possibly show an error message
+  });
     } catch (error) {
       console.error(error);
       toast.error("Failed to apply coupon. Please try again."); 
