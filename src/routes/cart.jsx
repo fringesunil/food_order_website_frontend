@@ -5,6 +5,7 @@ import axios from 'axios';
 import CouponForm from '../components/CouponForm';
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
 
 export async function loader() {
   const userId = localStorage.getItem('userId');
@@ -18,6 +19,7 @@ export async function loader() {
 export default function Cart() {
   const { carts, addresses } = useLoaderData();
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
   const totalAmount = carts.length > 0 ? carts[0].total_amount : 0;
   const gstAmount = carts.length > 0 ? carts[0].gst_amount : 0;
@@ -35,7 +37,7 @@ export default function Cart() {
       });
       return;
     }
-   else if (!selectedAddress) {
+    else if (!selectedAddress) {
       toast.error("Please select an address", {
         position: "top-center",
         autoClose: 3000,
@@ -59,6 +61,7 @@ export default function Cart() {
     };
 
     try {
+      setLoading(true); // Set loading to true before starting the payment process
       const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/order/initorder`, { total_amount: totalAmount + gstAmount });
 
       const options = {
@@ -101,6 +104,8 @@ export default function Cart() {
         position: "top-center",
         autoClose: 3000,
       });
+    } finally {
+      setLoading(false); // Set loading to false after the payment process
     }
   };
 
@@ -145,7 +150,6 @@ export default function Cart() {
                     Add Address
                   </button>
                 </div>
-
               )}
 
               <div className="border-b border-black my-2"></div>
@@ -171,8 +175,8 @@ export default function Cart() {
               <span>₹ {(totalAmount + gstAmount).toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <button className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="button" onClick={handleCreateOrder}>
-                Proceed To Pay
+              <button className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="button" onClick={handleCreateOrder} disabled={loading}>
+                {loading ? <CircularProgress size={24}  /> : "Proceed To Pay"}
               </button>
               <ToastContainer />
             </div>

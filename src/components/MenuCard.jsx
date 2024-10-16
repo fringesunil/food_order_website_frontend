@@ -52,17 +52,19 @@ function MenuCard(props) {
           total_amount: menu.price * count,
         };
   
-        await axios.post(`${import.meta.env.VITE_BASE_URL}/cart`, cartData);
+        await axios.post(`${import.meta.env.VITE_BASE_URL}/cart`, cartData).then(response => {
+          toast.success("Item added to cart successfully", {
+            position: "top-center",
+            autoClose: 1000,
+          });
+        });
       }
-      toast.success("Item added to cart successfully", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+     
     } catch (error) {
       console.error('Error:', error);
       toast.error("Failed to add item to cart", {
         position: "top-center",
-        autoClose: 3000,
+        autoClose: 1000,
       });
     } finally {
       setLoading(false); 
