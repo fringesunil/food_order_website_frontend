@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
+import CircularProgress from '@mui/material/CircularProgress';  // Import CircularProgress component
 
 export default function CouponForm({ cartId }) {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [copiedCoupon, setCopiedCoupon] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const {
     register,
@@ -19,33 +21,31 @@ export default function CouponForm({ cartId }) {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setLoading(true);  // Start loading
     const userId = localStorage.getItem('userId');
     try {
       const cartResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
 
       if (cartResponse.data[0].discount !== 0) {
-        toast.error("You already have a discount applied!", { autoClose: 3000 });
-        window.location.reload();
-        // navigate(`/home/cart`);
         return; 
       }
 
       const body = { ...data, cartId: cartId };
 
-    axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
-  .then(response => {
-    if (response.status === 200) {
-      toast.success("Coupon applied successfully!", { autoClose: 3000 });
-      navigate(`/home/cart`);
-    }
-  })
-  .catch(error => {
-    console.error("Error applying coupon:", error);
-    // Handle error, possibly show an error message
-  });
+      axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
+        .then(response => {
+          if (response.status === 200) {
+            navigate(`/home/cart`);
+          }
+        })
+        .catch(error => {
+          console.error("Error applying coupon:", error);
+        });
     } catch (error) {
       console.error(error);
       toast.error("Failed to apply coupon. Please try again."); 
+    } finally {
+      setLoading(false);  // Stop loading
     }
   };
 
@@ -76,7 +76,7 @@ export default function CouponForm({ cartId }) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ToastContainer  />
+        <ToastContainer />
         <div className="flex items-center space-x-2">
           <input
             type="text"
@@ -84,20 +84,24 @@ export default function CouponForm({ cartId }) {
             {...register("couponCode", { required: true })}
             className="shadow appearance-none border rounded w-[20rem] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="Enter coupon code"
+            disabled={loading}  // Disable input during loading
           />
           <button
             type="button"
             onClick={openDialog}
             className="shadow appearance-none rounded w-[14rem] py-2 px-3 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-[#A5B5BF] border-2 border-black text-black font-bold"
+            disabled={loading}  // Disable button during loading
           >
             View Coupons
           </button>
         </div>
         <button
-         className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="submit"
+          className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black flex justify-center items-center"
+          type="submit"
+          disabled={loading}  // Disable button during loading
         >
-          Apply
-          </button>
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Apply"}  {/* Show loader or text */}
+        </button>
       </form>
 
       {isDialogOpen && (
