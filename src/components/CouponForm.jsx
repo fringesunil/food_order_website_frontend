@@ -2,16 +2,16 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
-import CircularProgress from '@mui/material/CircularProgress';  // Import CircularProgress component
+import CircularProgress from '@mui/material/CircularProgress';  
+import { SnackbarProvider, useSnackbar } from 'notistack';  
 
 export default function CouponForm({ cartId }) {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [copiedCoupon, setCopiedCoupon] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false); 
+  const { enqueueSnackbar } = useSnackbar(); 
 
   const {
     register,
@@ -21,13 +21,18 @@ export default function CouponForm({ cartId }) {
   } = useForm();
 
   const onSubmit = async (data) => {
-    setLoading(true);  // Start loading
+    setLoading(true);  
     const userId = localStorage.getItem('userId');
     try {
-      const cartResponse = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
-
-      if (cartResponse.data[0].discount !== 0) {
-        return; 
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/cart?user_id=${userId}`);
+    
+      if (response.data[0].discount !== 0) {
+          enqueueSnackbar("Coupon Already Applied!", { 
+            variant: 'error',  
+            autoHideDuration: 2000,
+            anchorOrigin: { vertical: 'top', horizontal: 'center' } 
+          });
+          return; 
       }
 
       const body = { ...data, cartId: cartId };
@@ -39,13 +44,18 @@ export default function CouponForm({ cartId }) {
           }
         })
         .catch(error => {
+          enqueueSnackbar("Coupon Expired!", {
+            variant: 'error',
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: 'top', horizontal: 'center' }
+          });
           console.error("Error applying coupon:", error);
         });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to apply coupon. Please try again."); 
+      enqueueSnackbar("Failed to apply coupon. Please try again.", { variant: 'error' });
     } finally {
-      setLoading(false);  // Stop loading
+      setLoading(false);  
     }
   };
 
@@ -84,13 +94,13 @@ export default function CouponForm({ cartId }) {
             {...register("couponCode", { required: true })}
             className="shadow appearance-none border rounded w-[20rem] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="Enter coupon code"
-            disabled={loading}  // Disable input during loading
+            disabled={loading} 
           />
           <button
             type="button"
             onClick={openDialog}
             className="shadow appearance-none rounded w-[14rem] py-2 px-3 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-[#A5B5BF] border-2 border-black text-black font-bold"
-            disabled={loading}  // Disable button during loading
+            disabled={loading}  
           >
             View Coupons
           </button>
@@ -98,9 +108,9 @@ export default function CouponForm({ cartId }) {
         <button
           className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black flex justify-center items-center"
           type="submit"
-          disabled={loading}  // Disable button during loading
+          disabled={loading}
         >
-          {loading ? <CircularProgress size={24} color="inherit" /> : "Apply"}  {/* Show loader or text */}
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Apply"}  
         </button>
       </form>
 
@@ -138,7 +148,8 @@ export default function CouponForm({ cartId }) {
           </div>
         </div>
       )}
-              <ToastContainer />
     </>
   );
 }
+
+

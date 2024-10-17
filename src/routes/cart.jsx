@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import CartitemsCard from '../components/CartitemsCard';
 import axios from 'axios';
 import CouponForm from '../components/CouponForm';
-import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 export async function loader() {
   const userId = localStorage.getItem('userId');
@@ -19,8 +18,10 @@ export async function loader() {
 export default function Cart() {
   const { carts, addresses } = useLoaderData();
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar(); 
+
   const totalAmount = carts.length > 0 ? carts[0].total_amount : 0;
   const gstAmount = carts.length > 0 ? carts[0].gst_amount : 0;
   const discount = carts.length > 0 ? carts[0].discount : 0;
@@ -30,18 +31,11 @@ export default function Cart() {
   };
 
   const handleCreateOrder = async () => {
-    if(carts.length===0){
-      toast.error("No item found in cart", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+    if (carts.length === 0) {
+      enqueueSnackbar("No item found in cart", { variant: "error" , autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' }});
       return;
-    }
-    else if (!selectedAddress) {
-      toast.error("Please select an address", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+    } else if (!selectedAddress) {
+      enqueueSnackbar("Please select an address", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' }});
       return;
     }
 
@@ -61,7 +55,7 @@ export default function Cart() {
     };
 
     try {
-      setLoading(true); // Set loading to true before starting the payment process
+      setLoading(true);
       const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/order/initorder`, { total_amount: totalAmount + gstAmount });
 
       const options = {
@@ -85,10 +79,7 @@ export default function Cart() {
           if (orderResponse.status === 200) {
             await axios.delete(`${import.meta.env.VITE_BASE_URL}/cart/${carts[0]._id}`);
             navigate(`/home/hotels`);
-            toast.success("Order Placed Successfully", {
-              position: "top-center",
-              autoClose: 3000,
-            });
+            enqueueSnackbar("Order Placed Successfully", { variant: "success", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' } });
           }
         },
         theme: {
@@ -100,12 +91,9 @@ export default function Cart() {
       rzp.open();
     } catch (error) {
       console.error('Error:', error);
-      toast.error("Failed to proceed with payment", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      enqueueSnackbar("Failed to proceed with payment", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' } });
     } finally {
-      setLoading(false); // Set loading to false after the payment process
+      setLoading(false); 
     }
   };
 
@@ -145,7 +133,7 @@ export default function Cart() {
                   <p>No addresses found</p>
                   <button
                     className="mt-4 bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black w-[10rem]"
-                    onClick={() => navigate('/home/profile/address/add',{ state: { fromCart: true } })}
+                    onClick={() => navigate('/home/profile/address/add', { state: { fromCart: true } })}
                   >
                     Add Address
                   </button>
@@ -176,9 +164,8 @@ export default function Cart() {
             </div>
             <div className="flex items-center justify-between py-2">
               <button className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black" type="button" onClick={handleCreateOrder} disabled={loading}>
-                {loading ? <CircularProgress size={24}  /> : "Proceed To Pay"}
+                {loading ? <CircularProgress size={24} /> : "Proceed To Pay"}
               </button>
-              <ToastContainer />
             </div>
           </div>
         </div>
@@ -186,3 +173,4 @@ export default function Cart() {
     </main>
   );
 }
+

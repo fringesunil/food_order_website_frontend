@@ -3,46 +3,60 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from '@mui/material'; 
-import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import {  useSnackbar } from 'notistack';
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  
+  const { enqueueSnackbar } = useSnackbar();  
+
   const onSubmit = (data) => {
     setLoading(true); 
     axios.post(`${import.meta.env.VITE_BASE_URL}/user`, data)
-      .then(response => {
+    .then(response => {
+      if (response.status === 200) {
         localStorage.setItem('userId', response.data._id);
-        toast.success("Sign-up Successful!", {
-          position: "top-center",
-          autoClose: 3000,
+        enqueueSnackbar("Sign-up Successful!", { 
+          variant: 'success', 
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: 'top', horizontal: 'center' }
         });
         navigate(`/home/hotels`);
-      })
-      .catch(error => {
-        console.error(error);
-        toast.error("Sign-up Failed!", {
-          position: "top-center",
-          autoClose: 3000,
+      }
+    })
+    .catch(error => {
+      if (error.response) {
+        const { status } = error.response;
+        if (status === 401) {
+          enqueueSnackbar("Password mismatch!", { 
+            variant: 'error',  
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: 'top', horizontal: 'center' }
+          });
+        } else {
+          enqueueSnackbar("An unexpected error occurred!", { 
+            variant: 'error',  
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: 'top', horizontal: 'center' }
+          });
+        }
+      } else {
+        enqueueSnackbar("An error occurred. Please check your network connection.", { 
+          variant: 'error',  
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: 'top', horizontal: 'center' }
         });
-      })
-      .finally(() => {
-        setLoading(false); 
-      });
+      }
+    })
+    .finally(() => {
+      setLoading(false); 
+    });
+  
   };
 
   return (
     <>
-      <ToastContainer />
       <form onSubmit={handleSubmit(onSubmit)}>
 
         <label htmlFor="username" className="block text-white text-sm font-bold mb-2">Name</label>
@@ -85,7 +99,6 @@ export default function SignupForm() {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4 leading-tight focus:outline-none focus:shadow-outline"
         />
 
-     
         {loading ? (
           <div className="flex justify-center mt-4 mb-4">
             <CircularProgress />
@@ -101,3 +114,5 @@ export default function SignupForm() {
     </>
   );
 }
+
+

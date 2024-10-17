@@ -1,21 +1,20 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 import { useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
+import {  useSnackbar } from 'notistack';
 
 export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); 
+  const { enqueueSnackbar } = useSnackbar(); 
 
   const onSubmit = (data) => {
     setLoading(true); 
@@ -23,27 +22,26 @@ export default function LoginForm() {
       .then(response => {
         setLoading(false); 
         localStorage.setItem('userId', response.data.data._id);
-        toast.success("Login Successful!", {
-          position: "top-center",
-          autoClose: 3000,
+        enqueueSnackbar("Login Successful!", { 
+          variant: "success",
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: "top", horizontal: "center" }
         });
         navigate(`/home/hotels`);
       })
       .catch(error => {
         setLoading(false); 
-        console.log(error);
-        toast.error("Login Failed. Please try again.", {
-          position: "top-right",
-          autoClose: 3000,
+        console.error(error);
+        enqueueSnackbar("Login Failed. Please try again.", {
+          variant: "error",
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: "top", horizontal: "right" }
         });
       });
   };
 
-  console.log(watch("example")); 
-
   return (
     <>
-      <ToastContainer />
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="email" className="block text-white text-sm font-bold mb-2">Email Id</label>
         <input
@@ -63,7 +61,6 @@ export default function LoginForm() {
         />
         {errors.password && <span className="text-white text-sm font-bold">This field is required</span>}
 
-        
         <button
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
@@ -79,3 +76,4 @@ export default function LoginForm() {
     </>
   );
 }
+

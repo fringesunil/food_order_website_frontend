@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MenuCard from '../components/MenuCard';
 import { useLoaderData, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
 function Menu() {
   const location = useLocation();
@@ -27,7 +28,9 @@ function Menu() {
       <h1 className="text-6xl font-bold text-center text-black py-4 px-2 font-ruge tracking-wide">Menu</h1>
         <div className='grid grid-cols-5 gap-4'>
         {menulist.map((menu) => (
+           <SnackbarProvider maxSnack={3}> 
             <MenuCard key={menu._id} menu={menu} />
+            </SnackbarProvider>
           ))}
         </div>
       </section>

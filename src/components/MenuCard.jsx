@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { useSnackbar } from 'notistack';
 
 function MenuCard(props) {
   const userId = localStorage.getItem('userId');
   const { menu } = props;
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar(); 
 
   const handleIncrement = () => {
     setCount(prevCount => prevCount + 1);
@@ -39,12 +39,14 @@ function MenuCard(props) {
         cartData = response.data[0];
         const existingCartItem = cartData.cart_items.find(item => item.menu_id._id === menu._id);
         if (existingCartItem) {
-          existingCartItem.quantity += count;
+          enqueueSnackbar("Item already added in cart", { variant: "error" , autoHideDuration: 3000,anchorOrigin: { vertical: 'top', horizontal: 'center' }},); 
+          return;
         } else {
           cartData.cart_items.push(newCartItem);
         }
         cartData.total_amount += menu.price * count;
         await axios.patch(`${import.meta.env.VITE_BASE_URL}/cart/${cartData._id}`, cartData);
+        enqueueSnackbar("Item added to cart successfully", { variant: "success" , autoHideDuration: 3000,anchorOrigin: { vertical: 'top', horizontal: 'center' }},); 
       } else {
         cartData = {
           user_id: userId,
@@ -52,20 +54,13 @@ function MenuCard(props) {
           total_amount: menu.price * count,
         };
   
-        await axios.post(`${import.meta.env.VITE_BASE_URL}/cart`, cartData).then(response => {
-          toast.success("Item added to cart successfully", {
-            position: "top-center",
-            autoClose: 1000,
-          });
-        });
+        await axios.post(`${import.meta.env.VITE_BASE_URL}/cart`, cartData);
+        enqueueSnackbar("Item added to cart successfully", { variant: "success" , autoHideDuration: 3000,anchorOrigin: { vertical: 'top', horizontal: 'center' }}); // Using notistack for success message
       }
      
     } catch (error) {
       console.error('Error:', error);
-      toast.error("Failed to add item to cart", {
-        position: "top-center",
-        autoClose: 1000,
-      });
+      enqueueSnackbar("Failed to add item to cart", { variant: "error" , autoHideDuration: 3000,anchorOrigin: { vertical: 'top', horizontal: 'center' }}); // Using notistack for error message
     } finally {
       setLoading(false); 
     }
@@ -93,7 +88,6 @@ function MenuCard(props) {
         >
           {loading ? 'Adding...' : 'Add to cart'} 
         </button>
-        <ToastContainer/>
       </div>
     </article>
   );
