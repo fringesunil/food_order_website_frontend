@@ -18,9 +18,9 @@ export async function loader() {
 export default function Cart() {
   const { carts, addresses } = useLoaderData();
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar(); 
+  const { enqueueSnackbar } = useSnackbar();
 
   const totalAmount = carts.length > 0 ? carts[0].total_amount : 0;
   const gstAmount = carts.length > 0 ? carts[0].gst_amount : 0;
@@ -32,10 +32,10 @@ export default function Cart() {
 
   const handleCreateOrder = async () => {
     if (carts.length === 0) {
-      enqueueSnackbar("No item found in cart", { variant: "error" , autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+      enqueueSnackbar("No item found in cart", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' } });
       return;
     } else if (!selectedAddress) {
-      enqueueSnackbar("Please select an address", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' }});
+      enqueueSnackbar("Please select an address", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' } });
       return;
     }
 
@@ -93,7 +93,7 @@ export default function Cart() {
       console.error('Error:', error);
       enqueueSnackbar("Failed to proceed with payment", { variant: "error", autoHideDuration: 3000, anchorOrigin: { vertical: 'top', horizontal: 'center' } });
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -104,7 +104,10 @@ export default function Cart() {
           <div className='w-[59rem] min-h-full bg-transparent border-r border-black px-3 py-1'>
             {carts && carts.length > 0 ? (
               carts.map(cart => (
-                <CartitemsCard key={cart._id} cart={cart} />
+                <SnackbarProvider maxSnack={3}>
+                  <CartitemsCard key={cart._id} cart={cart} />
+                </SnackbarProvider>
+
               ))
             ) : (
               <p className='py-52 px-52 w-[57rem]'>No items in the cart.</p>

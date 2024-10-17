@@ -2,9 +2,11 @@ import axios from 'axios';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import {  useSnackbar } from 'notistack';
 
 function CartitemsCard(props) {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { cart } = props;
   const { cart_items } = cart;
 
@@ -12,6 +14,11 @@ function CartitemsCard(props) {
     if (cart.cart_items.length === 1) {
       try {
         await deleteCart(cart._id);
+        enqueueSnackbar("Cart deleted", {
+          variant: "error",
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: "top", horizontal: "center" }
+        });
         console.log(`Cart deleted===>${cart._id}`);
       } catch (err) {
         console.error('Error deleting cart:', err);
@@ -20,14 +27,36 @@ function CartitemsCard(props) {
       const updatedCartItems = cart.cart_items.filter(item => item._id !== itemId);
       try {
         await updateCart(cart._id, { cart_items: updatedCartItems });
+        enqueueSnackbar("Item removed from cart", {
+          variant: "success",
+          autoHideDuration: 3000,
+          anchorOrigin: { vertical: "top", horizontal: "center" }
+        });
         console.log(`Cart item deleted===>${itemId}`);
       } catch (err) {
         console.error('Error updating cart:', err);
       }
     }
   };
+  
 
-  // API functions
+  const handleQuantityChange = async (itemId, action) => {
+    const updatedCartItems = cart.cart_items.map(item => {
+      if (item._id === itemId) {
+        const newQuantity = action === 'increment' ? item.quantity + 1 : item.quantity - 1;
+        return { ...item, quantity: Math.max(1, newQuantity) }; 
+      }
+      return item;
+    });
+
+    try {
+      await updateCart(cart._id, { cart_items: updatedCartItems });
+      console.log(`Cart item updated===>${itemId}, New Quantity: ${updatedCartItems.find(item => item._id === itemId).quantity}`);
+    } catch (err) {
+      console.error('Error updating cart:', err);
+    }
+  };
+
   const deleteCart = async (cartId) => {
     try {
       const response = await axios.delete(`${import.meta.env.VITE_BASE_URL}/cart/${cartId}`);
@@ -61,12 +90,26 @@ function CartitemsCard(props) {
             <img src={image} alt={name} className='w-[10rem] h-[6rem] my-1 mx-6 rounded-lg' />
             <div>
               <h2>{name}</h2>
-              <span>₹ {price}</span>
-              <div className='item-count flex'>
-                <span>Qty: {quantity}</span>
+              <span >₹ {price}</span>
+              <div className='pb-2'>
+                <div className='item-count flex items-center space-x-4 border border-black w-[7rem] px-4 rounded-full'>
+                  <button 
+                    className='px-1' 
+                    onClick={() => handleQuantityChange(item._id, 'decrement')} 
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <span>{quantity}</span>
+                  <button 
+                    onClick={() => handleQuantityChange(item._id, 'increment')}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
               <div>
-                <span>Total: {price} * {quantity} = {price * quantity}</span>
+                <span>Total: ₹ {price} * {quantity} = ₹ {price * quantity}</span>
               </div>
             </div>
             <button
