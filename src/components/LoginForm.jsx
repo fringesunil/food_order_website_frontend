@@ -31,12 +31,22 @@ export default function LoginForm() {
       })
       .catch(error => {
         setLoading(false); 
-        console.error(error);
-        enqueueSnackbar("Login Failed. Please try again.", {
-          variant: "error",
-          autoHideDuration: 3000,
-          anchorOrigin: { vertical: "top", horizontal: "right" }
-        });
+        if (error.response) {
+          const { status } = error.response;
+        if (status ===401) {
+          enqueueSnackbar("Wrong Password", {
+            variant: "error",
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: "top", horizontal: "center" }
+          });
+        }else if(status ===404){
+          enqueueSnackbar("User Account not found", {
+            variant: "error",
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: "top", horizontal: "center" }
+          });
+        }
+      }
       });
   };
 
