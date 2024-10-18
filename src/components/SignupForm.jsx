@@ -34,7 +34,14 @@ export default function SignupForm() {
             autoHideDuration: 3000,
             anchorOrigin: { vertical: 'top', horizontal: 'center' }
           });
-        } else {
+        } else if(status === 400){
+          enqueueSnackbar("Email already exists", { 
+            variant: 'error',  
+            autoHideDuration: 3000,
+            anchorOrigin: { vertical: 'top', horizontal: 'center' }
+          });
+        }
+        else {
           enqueueSnackbar("An unexpected error occurred!", { 
             variant: 'error',  
             autoHideDuration: 3000,
