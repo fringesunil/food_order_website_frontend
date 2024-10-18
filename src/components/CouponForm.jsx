@@ -40,6 +40,11 @@ export default function CouponForm({ cartId }) {
       axios.post(`${import.meta.env.VITE_BASE_URL}/coupon/apply-coupon`, body)
         .then(response => {
           if (response.status === 200) {
+            enqueueSnackbar("Coupon Applied Successfully", {
+              variant: 'success',
+              autoHideDuration: 3000,
+              anchorOrigin: { vertical: 'top', horizontal: 'center' }
+            });
             navigate(`/home/cart`);
           }
         })
