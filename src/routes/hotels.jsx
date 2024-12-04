@@ -34,7 +34,7 @@ export default function Hotels() {
   ];
 
   return (
-    <main className='bg-[#B0A1BA] min-h-full pb-5'>
+    <main className='bg-[#B0A1BA] min-h-full pb-5 overflow-hidden'>
       <section className='bg-orange-300 h-[20rem]'>
         <Slider {...sliderSettings}>
           {sliderImages.map((image, index) => (
