@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import RestaurantCard from '../components/RestaurantCard';
 import axios from 'axios';
 import { useLoaderData } from 'react-router-dom';
-import Slider from 'react-slick'; // Importing the slider component
+import Slider from 'react-slick'; 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -15,8 +15,8 @@ export async function loader() {
 
 export default function Hotels() {
   const { hotels } = useLoaderData();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Settings for the slider
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -33,6 +33,10 @@ export default function Hotels() {
     'https://res.cloudinary.com/drinn62yk/image/upload/v1728692387/Green_Stripe_Cloth_Flatlay_Healthy_Food_Facebook_Cover_mcwnxr.png',
   ];
 
+  const filteredHotels = hotels.filter((hotel) =>
+    hotel.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <main className='bg-[#B0A1BA] min-h-full pb-5 overflow-hidden'>
       <section className='bg-orange-300 h-[20rem]'>
@@ -45,9 +49,20 @@ export default function Hotels() {
         </Slider>
       </section>
       <section className='py-2 px-2'>
-      <h1 className="text-8xl font-bold text-center text-black py-4 px-2 font-ruge tracking-wide">Restaurants</h1>
+        <h1 className="text-8xl font-bold text-center text-black py-4 px-2 font-ruge tracking-wide">Restaurants</h1>
+        
+        <div className="flex justify-center my-4">
+          <input
+            type="text"
+            placeholder="Search restaurants..."
+            className="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      
         <div className='grid grid-cols-5 gap-4'>
-          {hotels.map((hotel) => {
+          {filteredHotels.map((hotel) => {
             return <RestaurantCard key={hotel._id} hotel={hotel} />;
           })}
         </div>
