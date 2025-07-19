@@ -9,12 +9,11 @@ export async function loader({ params }) {
      return { useraddress };
    }
 
-
 export default function EditAddress() {
     const {useraddress}=useLoaderData();
   return (
-    <main className='bg-[#B0A1BA] h-screen'>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
       <EditaddressCard useraddress={useraddress}/>
-  </main>
+    </div>
   )
 }

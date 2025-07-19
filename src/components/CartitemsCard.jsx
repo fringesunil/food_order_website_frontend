@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import {  useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 
 function CartitemsCard(props) {
   const navigate = useNavigate();
@@ -80,47 +80,90 @@ function CartitemsCard(props) {
   };
 
   return (
-    <article className='max-h-[38rem] overflow-y-auto'>
+    <div className="space-y-4">
       {cart_items.map((item) => {
         const { menu_id, quantity } = item;
         const { name, price, image } = menu_id;
 
         return (
-          <div key={item._id} className='w-[55rem] h-fit bg-transparent border border-black rounded-lg mx-4 px-3 py-1 flex flex-row pb-2 mb-2'>
-            <img src={image} alt={name} className='w-[10rem] h-[6rem] my-1 mx-6 rounded-lg' />
-            <div>
-              <h2>{name}</h2>
-              <span >₹ {price}</span>
-              <div className='pb-2'>
-                <div className='item-count flex items-center space-x-4 border border-black w-[7rem] px-4 rounded-full'>
-                  <button 
-                    className='px-1' 
-                    onClick={() => handleQuantityChange(item._id, 'decrement')} 
-                    disabled={quantity <= 1}
+          <div key={item._id} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors duration-200">
+            <div className="flex items-center space-x-4">
+              {/* Image */}
+              <div className="flex-shrink-0">
+                <img 
+                  src={image} 
+                  alt={name} 
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover shadow-sm"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-800 truncate">
+                      {name}
+                    </h3>
+                    <p className="text-orange-600 font-medium">
+                      ₹{price}
+                    </p>
+                  </div>
+                  
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDeleteItem(item._id)}
+                    className="flex-shrink-0 ml-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors duration-200"
+                    title="Remove item"
                   >
-                    -
-                  </button>
-                  <span>{quantity}</span>
-                  <button 
-                    onClick={() => handleQuantityChange(item._id, 'increment')}
-                  >
-                    +
+                    <FaTrashAlt size={16} />
                   </button>
                 </div>
-              </div>
-              <div>
-                <span>Total: ₹ {price} * {quantity} = ₹ {price * quantity}</span>
+
+                {/* Quantity Controls */}
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center space-x-3">
+                    <button 
+                      onClick={() => handleQuantityChange(item._id, 'decrement')} 
+                      disabled={quantity <= 1}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 ${
+                        quantity <= 1
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                      </svg>
+                    </button>
+                    
+                    <span className="text-lg font-semibold text-gray-800 min-w-[2rem] text-center">
+                      {quantity}
+                    </span>
+                    
+                    <button 
+                      onClick={() => handleQuantityChange(item._id, 'increment')}
+                      className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 flex items-center justify-center transition-colors duration-200"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Total Price */}
+                  <div className="text-right">
+                    <p className="text-sm text-gray-500">Total</p>
+                    <p className="text-lg font-bold text-gray-800">
+                      ₹{(price * quantity).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <button
-              onClick={() => handleDeleteItem(item._id)}
-              className='ml-auto p-2 hover:text-red-600'>
-              <FaTrashAlt size={20} />
-            </button>
           </div>
         );
       })}
-    </article>
+    </div>
   );
 }
 

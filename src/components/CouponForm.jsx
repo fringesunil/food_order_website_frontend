@@ -90,66 +90,114 @@ export default function CouponForm({ cartId }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            id="couponcode"
-            {...register("couponCode", { required: true })}
-            className="shadow appearance-none border rounded w-[20rem] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter coupon code"
-            disabled={loading} 
-          />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              id="couponcode"
+              {...register("couponCode", { required: true })}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition-all duration-200 bg-white"
+              placeholder="Enter coupon code"
+              disabled={loading} 
+            />
+            {errors.couponCode && (
+              <p className="text-red-500 text-sm mt-1">Coupon code is required</p>
+            )}
+          </div>
           <button
             type="button"
             onClick={openDialog}
-            className="shadow appearance-none rounded w-[14rem] py-2 px-3 mb-3 leading-tight focus:outline-none focus:shadow-outline bg-[#A5B5BF] border-2 border-black text-black font-bold"
+            className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-200 border-2 border-gray-200 hover:border-gray-300"
             disabled={loading}  
           >
             View Coupons
           </button>
         </div>
+        
         <button
-          className="w-full bg-[#A5B5BF] text-black font-bold py-2 px-4 rounded-full border-2 border-black flex justify-center items-center"
+          className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center space-x-2 ${
+            loading
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-orange-500 hover:bg-orange-600 text-white hover:shadow-lg transform hover:-translate-y-0.5'
+          }`}
           type="submit"
           disabled={loading}
         >
-          {loading ? <CircularProgress size={24} color="inherit" /> : "Apply"}  
+          {loading ? (
+            <>
+              <CircularProgress size={20} color="inherit" />
+              <span>Applying...</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+              </svg>
+              <span>Apply Coupon</span>
+            </>
+          )}
         </button>
       </form>
 
+      {/* Coupon Dialog */}
       {isDialogOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50" onClick={closeDialog}>
-          <div className="bg-white p-4 rounded-lg shadow-lg w-[400px]" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-bold mb-2">Available Coupons</h2>
-
-            {dialogContent ? (
-              <div className="grid grid-cols-1 gap-4">
-                {dialogContent.map((coupon, index) => (
-                  <div key={index} className="bg-gray-100 shadow-md rounded-lg p-4 flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-gray-700">{coupon.coupon_code}</h3>
-                    <div className="flex items-center space-x-2">
-                      <span className="bg-green-500 text-white text-sm px-2 py-1 rounded-full">
-                        {coupon.discount_percentage}% OFF
-                      </span>
-                      <button
-                        onClick={() => copyToClipboard(coupon.coupon_code)}
-                        className="bg-gray-300 text-gray-800 px-2 py-1 rounded"
-                      >
-                        {copiedCoupon === coupon.coupon_code ? "Copied!" : "Copy"}
-                      </button>
-                    </div>
-                  </div>
-                ))}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4" onClick={closeDialog}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* Dialog Header */}
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">Available Coupons</h2>
+                <button
+                  onClick={closeDialog}
+                  className="text-white hover:text-orange-200 transition-colors duration-200"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-            ) : (
-              <p>Loading...</p>
-            )}
+            </div>
 
-            <button onClick={closeDialog} className="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded">
-              Close
-            </button>
+            {/* Dialog Content */}
+            <div className="p-6 max-h-[60vh] overflow-y-auto">
+              {dialogContent ? (
+                <div className="space-y-4">
+                  {dialogContent.map((coupon, index) => (
+                    <div key={index} className="bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-bold text-gray-800 font-mono">
+                          {coupon.coupon_code}
+                        </h3>
+                        <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-semibold">
+                          {coupon.discount_percentage}% OFF
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-gray-600 text-sm">
+                          Get {coupon.discount_percentage}% discount on your order
+                        </p>
+                        <button
+                          onClick={() => copyToClipboard(coupon.coupon_code)}
+                          className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                            copiedCoupon === coupon.coupon_code
+                              ? 'bg-green-500 text-white'
+                              : 'bg-orange-500 text-white hover:bg-orange-600'
+                          }`}
+                        >
+                          {copiedCoupon === coupon.coupon_code ? "Copied!" : "Copy"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading coupons...</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
